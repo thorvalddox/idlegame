@@ -1,0 +1,14 @@
+[
+  {
+    "name": "plains",
+    "cost": [],
+    "reactions": ["food/meat:0 -> food/meat:1"],
+    "parent": null
+  },
+  {
+    "name": "farm",
+    "cost": [],
+    "reactions": ["food/meat:0 -> food/meat:1"],
+    "parent": "plains"
+  }
+]

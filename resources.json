@@ -1,0 +1,76 @@
+{
+  "food": {
+    "fruit": {},
+    "grain": {},
+    "meat": {},
+    "vegetable": {},
+    "water": {},
+    "bread": {},
+    "pie": {},
+    "stew": {},
+    "salad": {},
+    "roast": {},
+    "meal": {}
+  },
+  "wood": {
+    "sticks": {},
+    "logs": {},
+    "planks": {},
+    "sawdust": {}
+  },
+  "construction": {
+    "buildingmat" : {},
+    "windows": {},
+    "heart": {},
+    "woodworks":{}
+  },
+  "stone" : {
+    "@ cobble" : {
+      "granite" : {},
+      "slate" : {},
+      "basalt": {},
+      "marble": {},
+      "obsidian": {},
+      "red_rock": {},
+      "molten_rock": {}
+    },
+    "@ bricks" : {
+      "+stone/cobble" : {},
+      "clay" : {}
+    }
+  },
+  "metal":
+  {
+    "@ ore" : {
+      "copper":{},
+      "zinc":{},
+      "tin":{},
+      "iron":{},
+      "lead":{},
+      "silver":{},
+      "gold":{},
+      "platinum":{},
+      "tungstun":{}
+    },
+    "bars" : {
+      "+metal/ore":{},
+      "brass" : {},
+      "bronze" : {},
+      "electrum" : {},
+      "steel" : {},
+      "pig_iron" : {}
+    },
+    "@ tools" : {
+      "+metal/bars" : {}
+    },
+    "@ plates" : {
+      "+metal/bars" : {}
+    },
+    "@ wires" : {
+      "+metal/bars" : {}
+    }
+
+
+
+  }
+}

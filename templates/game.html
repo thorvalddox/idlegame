@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{%  block contents %}
+    <table>
+        <tr>
+            <td>
+                <table>
+                    <col width="300">
+                    {{ resource_tree |safe }}
+                </table>
+            </td>
+            <td>
+                {{ plots |safe }}
+            </td>
+        </tr>
+    </table>
+{%  endblock %}
