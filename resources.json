@@ -1,22 +1,22 @@
 {
-  "food": {
-    "fruit": {},
-    "grain": {},
-    "meat": {},
-    "vegetable": {},
-    "water": {},
-    "bread": {},
-    "pie": {},
-    "stew": {},
-    "salad": {},
-    "roast": {},
-    "meal": {}
+  "food->shiny-apple#00ff00": {
+    "fruit->shiny-apple#ff0000": {},
+    "wheat->wheat#ffbb00": {},
+    "meat->meat#ff0000": {},
+    "vegetable->aubergine#007700": {},
+    "water->barrel#0000ff": {},
+    "bread->sliced-bread#aa7700": {},
+    "pie->pie-slice#ff0000": {},
+    "stew->bubbling-bowl#007700": {},
+    "salad->bubbling-bowl#00ff00": {},
+    "roast->meat#770000": {},
+    "meal->bubbling-bowl#ff0000": {}
   },
-  "wood": {
-    "sticks": {},
-    "logs": {},
-    "planks": {},
-    "sawdust": {}
+  "wood->log#aa7700": {
+    "sticks->log#007700": {},
+    "logs->log#aa7700": {},
+    "planks->planks#aa7700": {},
+    "sawdust->dust-cloud#aa7700": {}
   },
   "construction": {
     "buildingmat" : {},
@@ -24,49 +24,49 @@
     "heart": {},
     "woodworks":{}
   },
-  "stone" : {
+  "stone->rock#77777" : {
     "@ cobble" : {
-      "granite" : {},
-      "slate" : {},
-      "basalt": {},
-      "marble": {},
-      "obsidian": {},
-      "red_rock": {},
-      "molten_rock": {}
+      "granite->#333333" : {},
+      "slate->#0000ff" : {},
+      "basalt->#000077": {},
+      "marble->#00ffff": {},
+      "obsidian->#000000": {},
+      "red_rock->#ff0000": {},
+      "molten_rock->#ff7700": {}
     },
-    "@ bricks" : {
+    "@ bricks->brick-pile" : {
       "+stone/cobble" : {},
       "clay" : {}
     }
   },
-  "metal":
+  "metal->metal-bar#777777":
   {
-    "@ ore" : {
-      "copper":{},
-      "zinc":{},
-      "tin":{},
-      "iron":{},
-      "lead":{},
-      "silver":{},
-      "gold":{},
-      "platinum":{},
-      "tungstun":{}
+    "@ ore->stone-pile" : {
+      "copper->#ff0000":{},
+      "zinc->#77ff00":{},
+      "tin->#00ff77":{},
+      "iron->#ff7733":{},
+      "lead->#000077":{},
+      "silver->#7777ff":{},
+      "gold->#ffaa00":{},
+      "platinum->#00ffff":{},
+      "tungstun->#ff0077":{}
     },
     "bars" : {
       "+metal/ore":{},
-      "brass" : {},
-      "bronze" : {},
-      "electrum" : {},
-      "steel" : {},
-      "pig_iron" : {}
+      "brass->#aa7733" : {},
+      "bronze->#aa5500" : {},
+      "electrum->#ffaa77" : {},
+      "steel->#7777aa" : {},
+      "pig_iron->#777777" : {}
     },
-    "@ tools" : {
+    "@ tools->wood-axe" : {
       "+metal/bars" : {}
     },
-    "@ plates" : {
+    "@ plates->stack" : {
       "+metal/bars" : {}
     },
-    "@ wires" : {
+    "@ wires->electric-whip" : {
       "+metal/bars" : {}
     }
 

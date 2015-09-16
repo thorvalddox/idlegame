@@ -19,15 +19,33 @@ class Resource:
 
     def __init__(self, name, parent=None):
         self.parent = parent
-        self.rawname = name
-        if "*" in name:
-            showname,subname = name.split("*")
-        elif "@" in name:
-            showname = name
-            subname = name.replace("@","").strip()
+        self.idstring = name
+        self.rawname = name.split("->")[0]
+        try:
+            if "->" in name:
+                if "#" in name:
+                    self.imagepath, self.color = name.split("->")[1].split("#")
+                    if not self.imagepath:
+                        self.imagepath = parent.imagepath
+                else:
+                    self.imagepath = name.split("->")[1]
+                    self.color = parent.color
+            else:
+                self.imagepath,self.color = parent.imagepath,parent.color
+        except AttributeError:
+            self.imagepath, self.color = "moebius-star", "f00"
+        with open("static/icons/" + self.imagepath + ".svg") as file:
+            self.image = file.read()
+            self.image = self.image.replace("\"#fff\"","\"#{}\"".format(self.color)) \
+                                   .replace("\"#000\"","\"#fff\"")
+        if "*" in self.rawname:
+            showname,subname = self.rawname.split("*")
+        elif "@" in self.rawname:
+            showname = self.rawname
+            subname = self.rawname.replace("@","").strip()
         else:
             showname = "@"
-            subname = name
+            subname = self.rawname
 
         self.childfill = showname.replace("@","{}")
         if self.parent is None:
@@ -36,7 +54,7 @@ class Resource:
         else:
             self.displayname = self.parent.childfill.format(subname)
             self.pathname = self.parent.pathname + "/" + subname
-
+        self.image = "<span title={}>{}</span>".format(self.displayname,self.image)
 
         p = self
         self.level = -1
@@ -89,7 +107,7 @@ class Resource:
         for k,v in data.items():
             if k.startswith("+"):
                 for i in Resource.get_by_path(k[1:]).get_children:
-                    Resource(i.rawname,self)
+                    Resource(i.idstring,self)
             else:
                 Resource(k,self).unpack(v)
 
@@ -104,9 +122,9 @@ class Resource:
 
 
 def js_resourse(resource):
+    jump = "&nbsp;&nbsp;&nbsp;&nbsp;" * resource.level
     if resource.pure:
-        name =  ">" * resource.level + \
-                "<a href=\"javascript:hide_{js_id}()\" id=\"button_{js_id}\">{name}</a>"\
+        name =  "<a href=\"javascript:hide_{js_id}()\" id=\"button_{js_id}\">{name}</a>"\
                 .format(name=resource.displayname,js_id=resource.js_id)
         show_funcs = "\n".join(
             """
@@ -121,7 +139,7 @@ def js_resourse(resource):
             """.format(r.js_id) for r in resource.get_children)
         autohide = "hide_{}();".format(resource.js_id)
     else:
-        name = ">" * resource.level + resource.displayname
+        name = resource.displayname
         show_funcs = ""
         hide_funcs = ""
         autohide = ""
@@ -129,7 +147,7 @@ def js_resourse(resource):
 
     <tr id="row_{js_id}"">
         <td>
-            {name}
+            {jump}{image}{name}
         </td>
         <td>
             <div id="res_{js_id}">Invalid</div>
@@ -158,7 +176,8 @@ def js_resourse(resource):
     </tr>
 
 
-    """.format(name=name,js_id=resource.js_id,show=show_funcs,hide=hide_funcs,autohide=autohide,
+    """.format(jump=jump,image=resource.image,name=name,js_id=resource.js_id,
+               show=show_funcs,hide=hide_funcs,autohide=autohide,
                updater=autoupdater("/get_resourse/{}/".format(resource.js_id),"res_"+resource.js_id))
 
 def autoupdater(path,html,unique=None):
@@ -256,7 +275,7 @@ def unittimes(unit):
     return Material(a,int(b))
 
 def display(mat):
-    return "{} x{}".format(*mat)
+    return "{} x{}".format(Resource.get_by_path(mat.path).image,mat.amount)
 
 
 
