@@ -18,12 +18,6 @@
     "planks->planks#aa7700": {},
     "sawdust->dust-cloud#aa7700": {}
   },
-  "construction": {
-    "buildingmat" : {},
-    "windows": {},
-    "heart": {},
-    "woodworks":{}
-  },
   "stone->rock#77777" : {
     "@ cobble" : {
       "granite->#333333" : {},
@@ -72,5 +66,15 @@
 
 
 
+  },
+  "construction->cubes#777777": {
+    "buildingmat" : {},
+    "windows->shatter": {},
+    "heart->alien-fire": {},
+    "woodworks->wooden-door":{},
+    "@ anvil->anvil": {
+      "+stone/cobble" : {},
+      "+metal/bars": {}
+    }
   }
 }

@@ -1,17 +1,59 @@
 {% extends "base.html" %}
 
 {%  block contents %}
-    <table>
+    <table xmlns="http://www.w3.org/1999/html">
         <tr>
             <td>
-                <table>
-                    <col width="300">
-                    {{ resource_tree |safe }}
-                </table>
+                <div id="" style="overflow-y:scroll; height:400px;">
+                    <table>
+                        <col width="300">
+                        {{ resource_tree |safe }}
+                    </table>
+                </div>
             </td>
             <td>
-                {{ plots |safe }}
+
+                    <div class="tabs">
+                        <div id="" style="overflow-x:scroll;width:1000px;height:100px">
+                            <ul class="tab-links">
+                                {% for name in plotnames %}
+                                    <li>
+                                        <a href="#tab{{loop.index}}">
+                                            <div id="plot_name_{{ loop.index0 }}">{{ name | safe }}</div>
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+
+                        <div class="tab-content">
+                            {% for struct in plots %}
+                            <div id="tab{{loop.index}}">
+                                {{ struct | safe }}
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                <script>
+                    jQuery(document).ready(function() {
+                        jQuery('.tabs ' + 1).show().siblings().hide();
+                        jQuery('.tabs .tab-links a').on('click', function(e)  {
+                            var currentAttrValue = jQuery(this).attr('href');
+
+                            // Show/Hide Tabs
+                            jQuery('.tabs ' + currentAttrValue).show().siblings().hide();
+
+                            // Change/remove current tab to active
+                            jQuery(this).parent('li').addClass('active').siblings().removeClass('active');
+
+                            e.preventDefault();
+                        });
+                    });
+                </script>
             </td>
         </tr>
     </table>
+    <script>
+        {{ updater |safe }}
+    </script>
 {%  endblock %}
