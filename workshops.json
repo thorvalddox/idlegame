@@ -14,12 +14,12 @@
   {
     "name": "shed",
     "cost": [],
-    "reactions": ["wood/sticks:1 -> construction/buildingmat:1"],
+    "reactions": ["wood/sticks:1 -> construction/walls:1"],
     "parent": "plains"
   },
   {
     "name": "scratch mine",
-    "cost": ["construction/buildingmat:40"],
+    "cost": ["construction/walls:40"],
     "reactions": ["stone/cobble/granite:0->stone/cobble/granite:1",
                   "metal/ore/tin:0->metal/ore/tin:1"],
     "parent": "plains"
@@ -27,50 +27,52 @@
   {
     "name": "plantage",
     "cost": ["metal/tools:5"],
-    "reactions": ["food/fruit:0 -> food/fruit:3","metal/tools:0->wood/logs:1"],
+    "reactions": ["food/fruit:0 -> food/fruit:3",
+                  "metal/tools:0->wood/logs:1"],
     "parent": "farm"
   },
   {
     "name": "oven workshop",
-    "cost": ["construction/buildingmat:40"],
+    "cost": ["construction/walls:40"],
     "reactions": ["metal/ore:1 -> metal/bars:2"],
     "parent": "shed"
   },
   {
     "name": "atelier",
-    "cost": ["construction/buildingmat:40"],
-    "reactions": ["wood/logs:1->wood/planks:3","stone/cobble:20->construction/anvil:1",
-                  "stone/brick:1","construction/buildingmat:10"],
+    "cost": ["construction/walls:40"],
+    "reactions": ["wood/logs:1->wood/planks:3",
+                  "stone/cobble:20->construction/anvil:1",
+                  "stone/brick:1","construction/walls:10"],
     "parent": "shed"
   },
   {
     "name": "sawmill",
-    "cost": ["construction/buildingmat:40","metal/tools/iron:10"],
+    "cost": ["construction/walls:40","metal/tools/iron:10"],
     "reactions": ["wood/logs:1->wood/planks:15"],
     "parent": "shed"
   },
   {
     "name": "forge",
-    "cost": ["construction/buildingmat:40","construction/anvil:1"],
+    "cost": ["construction/walls:40","construction/anvil:1"],
     "reactions": ["metal/bars:1 -> metal/tools:2"],
     "parent": "oven workshop"
   },
   {
     "name": "bakery",
-    "cost": ["construction/buildingmat:40"],
+    "cost": ["construction/walls:40"],
     "reactions": ["food/wheat:1 -> food/bread:2"],
     "parent": "oven workshop"
   },
   {
     "name": "undeep mine",
-    "cost": ["construction/buildingmat:40","metal/tools:20"],
+    "cost": ["construction/walls:40","metal/tools:20"],
     "reactions": ["stone/cobble/slate:0->stone/cobble/slate:1",
                   "metal/ore/copper:0->metal/ore/copper:1"],
     "parent": "scratch mine"
   },
   {
     "name": "furnace",
-    "cost": ["construction/buildingmat:40","construction/anvil:1"],
+    "cost": ["construction/walls:40","construction/anvil:1"],
     "reactions": ["metal/bars/copper:1+metal/bars/tin:1->metal/bars/bronze:1",
                   "metal/bars/copper:1+metal/bars/zinc:1->metal/bars/brass:1",
                   "metal/bars/silver:1+metal/bars/gold:1->metal/bars/electrum:1"],
@@ -78,14 +80,14 @@
   },
   {
     "name": "masonary",
-    "cost": ["construction/buildingmat:40","metal/tools/bronze:20"],
+    "cost": ["construction/walls:40","metal/tools/bronze:20"],
     "reactions": ["stone/cobble:1->stone/brick:4"],
     "parent": "atelier"
   },
   {
     "name": "carpentery",
-    "cost": ["construction/buildingmat:40","metal/tools/copper:20"],
-    "reactions": ["wood/planks:1->construction/buildingmat:10"],
+    "cost": ["construction/walls:40","metal/tools/copper:20"],
+    "reactions": ["wood/planks:1->construction/walls:10"],
     "parent": "atelier"
   }
 ]

@@ -56,7 +56,7 @@ class Resource:
         else:
             self.displayname = self.parent.childfill.format(subname)
             self.pathname = self.parent.pathname + "/" + subname
-        self.image = "<span title={}>{}</span>".format(self.displayname, self.image)
+        self.image = "<span title=\"{}\">{}</span>".format(self.displayname, self.image)
 
         p = self
         self.level = -1
@@ -66,6 +66,7 @@ class Resource:
 
         Resource.all_[self.pathname] = self
         update.auto("/get_resourse/{}/".format(self.js_id), "res_" + self.js_id)
+        update.auto("/get_resourse_gain/{}/".format(self.js_id), "resg_" + self.js_id)
 
     @property
     def get_children(self):
@@ -153,7 +154,10 @@ def js_resourse(resource):
         </td>
         <td>
             <div id="res_{js_id}">Invalid</div>
+        </td>
         <td>
+            <div id="resg_{js_id}">Invalid</div>
+        </td>
 
     <script>
         function show_{js_id}()
@@ -251,7 +255,9 @@ class Player:
 
     def __init__(self, id_):
         self.id_ = id_
-        self.resources = Counter((r, 0) for r in Resource.all_.keys())
+        self.resources = Counter()
+        self.resourcesPrev = self.resources.copy()
+        self.resourcesGain = self.resources.copy()
         self.plots = []
         Backclock(self).start()
         Player.all_[self.id_] = self
@@ -267,6 +273,9 @@ class Player:
     def get_resource(self, resource):
         return self.resources[resource.pathname] + sum(self.get_resource(r) for r in resource.get_children)
 
+    def get_resource_gain(self, resource):
+        return self.resourcesGain[resource.pathname] + sum(self.get_resource_gain(r) for r in resource.get_children)
+
     def pay(self, mats, speedup=True):
 
         if all(self.resources[mat.path] >= mat.amount*(SPEEDUP if speedup else 1) for mat in mats):
@@ -278,6 +287,8 @@ class Player:
         self.resources += {mat.path: mat.amount*(SPEEDUP if speedup else 1) for mat in mats}
 
     def step(self):
+        self.resourcesGain = self.resources - self.resourcesPrev
+        self.resourcesPrev = self.resources.copy()
         left = 1000 * max(len(self.plots)-4,0) ** 2
         if self.get_resource(Resource.get_by_path("food")) >= left:
             for i in Resource.all_:
@@ -334,7 +345,7 @@ class Reaction:
 
     def get_raws(self):
         for i in Resource.all_.values():
-            if i.pathname.startswith(self.starts[0].path):
+            if self.starts and i.pathname.startswith(self.starts[0].path):
                 yield Reaction_Raw([Material(i.pathname, self.starts[0].amount)] + self.starts[1:], list(self.get_creation(i.pathname)))
 
 
@@ -347,8 +358,12 @@ class Workshop:
     def __init__(self, jsondict):
         self.reactions = []
         for i in jsondict["reactions"]:
-            start = [x.strip() for x in i.split("->")[0].split("+")]
-            ends = [x.strip() for x in i.split("->")[1].split("+")]
+            if "->" not in i:
+                start = []
+                ends = [x.strip() for x in i.split("+")]
+            else:
+                start = [x.strip() for x in i.split("->")[0].split("+")]
+                ends = [x.strip() for x in i.split("->")[1].split("+")]
             self.reactions.extend(Reaction(start, ends).get_raws())
         self.cost = list(map(unittimes, jsondict["cost"]))
         self.name = jsondict["name"]
@@ -357,7 +372,7 @@ class Workshop:
 
     def step(self, active, player):
         if self.reactions:
-            print(self.reactions)
+            #print(self.reactions)
             r = self.reactions[active % len(self.reactions)]
             if player.pay(r.startlist):
                 player.gain(r.endlist)
@@ -408,6 +423,12 @@ class Plot:
         else:
             return self.workshop.get_string_active(self.active)
 
+    def get_inactive(self,index):
+        try:
+            return self.workshop.get_string_active(index)
+        except IndexError:
+            return ""
+
     def change_workshop(self, new):
         self.workshop = new
         self.build = 10
@@ -416,9 +437,26 @@ class Plot:
     def show_plot(index):
         return """
                 <table>
+                    <col width="200">
+                    <col width="300">
                     <tr>
                         <td>
-
+                            <div id="plot_reaction_{index}">plot reaction</div>
+                        </td>
+                        <td>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            produce
+                        </td>
+                        <td>
+                            upgrade
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a href="('/workshop/set/0/{index}')" id="reaction_0_{index}">Invalid</a>
                         </td>
                         <td>
                             <a href="('/workshop/upgrade/0/{index}')" id="upgrade_0_{index}">upgrade 0<div></a>
@@ -426,18 +464,20 @@ class Plot:
                     </tr>
                     <tr>
                         <td>
-                            <a href="('/workshop/shift/left/{index}')">&lt;-</a> <a href="/workshop/shift/right/{index}">-&gt;</a>
+                            <a href="('/workshop/set/1/{index}')" id="reaction_1_{index}">Invalid</a>
                         </td>
                         <td>
                             <a href="('/workshop/upgrade/1/{index}')" id="upgrade_1_{index}">upgrade 1<div></a>
+
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            <div id="plot_reaction_{index}">plot reaction</div>
+                            <a href="('/workshop/set/2/{index}')" id="reaction_2_{index}">Invalid</a>
                         </td>
                         <td>
                             <a href="('/workshop/upgrade/2/{index}')" id="upgrade_2_{index}">upgrade 2<div></a>
+
                         </td>
                     </tr>
                 </table>
@@ -469,7 +509,9 @@ def init_plots():
         update.auto("/workshop/get/0/{}/".format(index), "upgrade_0_{}".format(index))
         update.auto("/workshop/get/1/{}/".format(index), "upgrade_1_{}".format(index))
         update.auto("/workshop/get/2/{}/".format(index), "upgrade_2_{}".format(index))
-
+        update.auto("/workshop/get/reac/0/{}/".format(index), "reaction_0_{}".format(index))
+        update.auto("/workshop/get/reac/1/{}/".format(index), "reaction_1_{}".format(index))
+        update.auto("/workshop/get/reac/2/{}/".format(index), "reaction_2_{}".format(index))
 
 # def pack_plots():
 #     yield "<table>"
@@ -485,7 +527,6 @@ def init_plots():
 
 @app.route('/')
 def home():
-    player = Player.get()
     response = make_response(render_template("game.html",
                                              resource_tree="\n".join(Resource.show_all()),
                                              plotnames = ["<div id=\"plot_name_{index}\"></div>".format(index =i)
@@ -503,9 +544,15 @@ def home():
 
 
 @app.route("/workshop/shift/<dir>/<index>/")
-def change_plot(dir, index):
+def shift_plot(dir, index):
     p = Player.get().plots[int(index)]
     p.active += {"left": -1, "right": 1}[dir]
+    return '', 204
+
+@app.route("/workshop/set/<newval>/<index>/")
+def change_plot(newval, index):
+    p = Player.get().plots[int(index)]
+    p.active = int(newval)
     return '', 204
 
 
@@ -523,6 +570,7 @@ def upgrade_plot(upgrade, index):
 def get_data():
     p = Player.get()
     retdict = {"res_"+r.js_id:p.get_resource(r) for r in Resource.all_.values()}
+    retdict.update({"resg_"+r.js_id:"{:+}".format(p.get_resource_gain(r)) for r in Resource.all_.values()})
     for i in range(200):
         if i >= len(p.plots):
             retdict.update({"plot_name_{}".format(i):"",
@@ -538,6 +586,9 @@ def get_data():
                             "upgrade_0_{}".format(i):([c.display for c in plot.workshop.get_children()] + [""] * 3)[0],
                             "upgrade_1_{}".format(i):([c.display for c in plot.workshop.get_children()] + [""] * 3)[1],
                             "upgrade_2_{}".format(i):([c.display for c in plot.workshop.get_children()] + [""] * 3)[2],
+                            "reaction_0_{}".format(i):plot.get_inactive(0),
+                            "reaction_1_{}".format(i):plot.get_inactive(1),
+                            "reaction_2_{}".format(i):plot.get_inactive(2),
                             })
     return jsonify(retdict)
 

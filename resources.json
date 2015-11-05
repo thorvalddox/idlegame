@@ -68,7 +68,7 @@
 
   },
   "construction->cubes#777777": {
-    "buildingmat" : {},
+    "walls" : {},
     "windows->shatter": {},
     "heart->alien-fire": {},
     "woodworks->wooden-door":{},
